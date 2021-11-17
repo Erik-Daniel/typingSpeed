@@ -1,8 +1,9 @@
 body {
-    background-color: rgb(177, 175, 175);
+    background-color: rgb(20, 20, 20);
 }
 h1 {
     text-align: center;
+    color: rgb(136, 135, 135)
 }
 .container {
     width: 80%;
@@ -12,48 +13,107 @@ h1 {
 }
 #main-container {
     width: 50%;
-    height: 100px;
+    height: 60px;
     margin: 0 auto;
-    background-color: rgb(128, 128, 128);
+    font-size: 3em;
+    padding: 0;
+    background-color: rgb(20, 20, 20);
+    color: rgb(136, 135, 135);
+
     text-align: left;
     white-space: nowrap;
+    font-family:'Times New Roman', Times, serif;
     overflow: hidden;
+    display: inline-block;
+    
 }
 #writtenWords {
     width: 50%;
-    height: 100px;
+    height: 60px;
+    text-align: right;
+    vertical-align: middle;
     font-size: 3em;
-    direction: rtl; 
-    margin: 0 auto;
-    display: block;
-    overflow: hidden;
-    background-color: rgb(128, 128, 128);
+    font-family:'Times New Roman', Times, serif;
+    direction: rtl;
+    overflow: hidden;   
+     background-color: rgb(20, 20, 20);
+     color: rgb(136, 135, 135);
+
     display: inline-block;
     white-space: nowrap;
  
 }
 #cursor {
-    background-color: rgb(128, 128, 128);
+    width: 5px;
+    height: 60px;   
+     background-color: rgb(20, 20, 20);
+    color: rgb(136, 135, 135);
     text-align: right;
+    float: right;
     color: blue;
-    white-space: nowrap;
     border: 0;
     padding: 0;
-    display: inline-block;
-}
-.word {
+    font-family:'Times New Roman', Times, serif;
+    padding-left: 5px;
+    margin: 0;
     font-size: 3em;
-    padding: 10px;
+    white-space: nowrap;
+    outline: 0;
+}   
+.word {
+    padding: 0;
     padding-left: 0;
+    white-space: pre-wrap;
 }
-/* #cursor { 
-    width: 5px;
-    background-color: black;
-    height: 80%;
-    animation: blink 1s infinite;
+.passedWord {
+    white-space: pre;
+}
+
+#timer {
+    text-align: center;
+    color: rgb(136, 135, 135)
 
 }
-@keyframes blink {
-    from, to { background-color: gray; }
-    50% {  background-color: black; }
-} */
+
+#popup {
+    width: 40%;
+    height: 40%;
+    position: absolute; 
+    background-color: rgb(88, 88, 88);
+    text-align: center;
+    animation: popupAnimation;
+    animation-duration: 1s;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 15%;
+    border: 2px black solid;
+   
+}
+
+@keyframes popupAnimation {
+    from {top: 0%; opacity: 0;}
+    to {top: 15%; opacity: 1;}
+}
+.details {
+    display: flex;
+    justify-content: space-evenly;
+    
+}
+
+.box {
+    width: 25%;
+    height: 50%;
+    border: 2px solid white;
+    border-radius: 10%;
+    text-align: center;
+}
+#restart {
+    width: 100px;
+    height: 30px;
+    margin-top: 15px;
+}
+#restart:hover {
+    cursor: pointer;
+}

@@ -246,13 +246,16 @@ var wordList = [
     "year","yellow","yes","yesterday","yet","you","young","younger",
     "your","yourself","youth","zero","zebra","zipper","zoo","zulu"
   ];
-let words = [];
-  const container = document.getElementById('container');
+  const container = document.querySelector('container');
   const mainContainer = document.getElementById('main-container');
   const passedLetterContainer= document.getElementById("writtenWords");
   const cursor = document.getElementById('cursor');
-  
-
+  let timer = document.getElementById("timer");
+  let time = 60;
+  let letterCount;
+  let firstKeyPress = false;
+  let clock;
+  let numberOfLetters = 0;
   
   function getWord() {
     let random = Math.floor(Math.random() * wordList.length);
@@ -260,7 +263,7 @@ let words = [];
   }
 
   function loadWords() {
-        let newWord = getWord() + " ";
+        let newWord = getWord();
         createAndAppendNewWord(newWord);
     
   }
@@ -268,70 +271,143 @@ let words = [];
   for(let i = 0; i < 5; i++) {
       loadWords();
   }
-  function displayWords(){
-    for(let i = 0; i < words.length; i++){
-        let word = words[i];
-        let wordSpan = document.createElement("span");
-        wordSpan.classList.add("word");
-        wordSpan.innerHTML = word;
-        mainContainer.appendChild(wordSpan);
-        
-  }
-}
- displayWords(); 
-  console.log(words);
 
   
   mainContainer.onclick = function() {
-      cursor.click();
+      cursor.select();
     }
 
+    passedLetterContainer.onclick = function() {
+      cursor.select();
+    }
+
+      cursor.onclick = function() {
+        cursor.setSelectionRange(cursor.value.length,cursor.value.length);
+      }
+      
     
     //add event listener for keypress on mainContainer
     cursor.addEventListener("keydown",function(e) {
-      
-      let letterCount;
+      if(!firstKeyPress){
+        startTimer();
+        firstKeyPress = true;
+      }
+      letterCount;
         let word = mainContainer.childNodes[1].innerHTML;
-        let wordLimit = word.length;
         if(e.key === word[0]){
-            if(word[0] === " "){ 
-                mainContainer.removeChild(mainContainer.childNodes[1]);
-                letterCount = 0;
-                loadWords();
-                let span = document.createElement("span");
-                span.innerHTML = cursor.textContent + " ";              
-                passedLetterContainer.appendChild(span);
-                cursor.innerHTML = null;
-               
-                
-            }
-            else{
-            //   console.log("false");
-           
-                console.log(mainContainer.childNodes[1].innerHTML);
-                mainContainer.childNodes[1].innerHTML = mainContainer.childNodes[1].innerHTML.substring(1);
-
-
-              }
-            console.log("correct");
+            numberOfLetters++;
         }
         else {
           e.preventDefault();
        
         }
-        
-        // let scrollWidth = cursor.scrollWidth;
-        // console.log("before " + cursor.style.width);
-        // cursor.style.width = scrollWidth + "px";
-        // console.log("after " + cursor.style.width)
+      
     })
+    cursor.addEventListener("input",function(e) {
+      if(cursor.value[cursor.value.length - 1] === " "){
+        mainContainer.removeChild(mainContainer.childNodes[1]);
+        letterCount = 0;
+        for(let i = 0; i < 2; i++){
+          loadWords();
+        }
+        let span = document.createElement("span");
+        span.innerText = cursor.value;
+        span.classList.add("passedWord");
+        passedLetterContainer.appendChild(span);
 
+          
+        cursor.value = null;
+        cursor.style.width = "5px";
+        
+        
+      }  else{
+
+            mainContainer.childNodes[1].innerHTML = mainContainer.childNodes[1].innerHTML.substring(1);
+
+
+          }
+      let scrollWidth = cursor.scrollWidth;
+      cursor.style.width = scrollWidth + "px";
+    })
     function createAndAppendNewWord(newWord) {
       
         let wordSpan = document.createElement("span");
         
         wordSpan.classList.add("word");
-        wordSpan.innerHTML = newWord;
+        wordSpan.innerHTML = newWord + " ";
         mainContainer.appendChild(wordSpan);
 
+    }
+
+    function startTimer() {
+       clock = setInterval(updateTime, 1000);  
+    } 
+
+    function updateTime() {
+      if(time > 0){
+        time -= 1;
+        timer.innerHTML = time + " Seconds";
+      }
+      else {
+        timeFinished();
+      }
+    }
+
+    function timeFinished() {
+      clearInterval(clock);
+      cursor.disabled = true;
+      createPopup();
+    }
+
+    function createPopup() {
+      let div = document.createElement("div");
+      let details = document.createElement("div");
+      let wpmBox = document.createElement("div");
+      let letterCountBox = document.createElement("div");
+      let title = document.createElement("h2");
+      let wpmLabel = document.createElement("h3");
+      let letterCountLabel = document.createElement("h3");
+      let realLetterCount = document.createElement("h3");
+      let realWpm = document.createElement("h3");
+      let restart = document.createElement("button");
+      let wpm = calculateWpm();
+
+
+      title.innerHTML = "Result";
+      title.style.textAlign = "center";
+      
+      wpmLabel.innerHTML = "WPM";
+      letterCountLabel.innerHTML = "Characters";
+      realLetterCount.innerHTML = numberOfLetters.toString();
+      realWpm.innerHTML = wpm.toString();
+
+
+      restart.textContent = "Restart";
+      restart.id = 'restart';
+      div.id = 'popup';
+
+      restart.onclick = function() {location.reload();}
+      details.classList.add("details");
+      wpmBox.classList.add("box");
+      letterCountBox.classList.add("box");
+
+      wpmBox.appendChild(wpmLabel);
+      wpmBox.appendChild(realWpm);
+      letterCountBox.appendChild(letterCountLabel);
+      letterCountBox.appendChild(realLetterCount);
+      details.appendChild(wpmBox);
+      details.appendChild(letterCountBox);
+      div.appendChild(title);
+    
+      div.appendChild(details);
+
+      div.appendChild(restart);
+
+      document.querySelector("body").appendChild(div);
+    }
+
+
+    function calculateWpm() {
+        let result = Math.round(numberOfLetters / 5);
+        return result;
     }
